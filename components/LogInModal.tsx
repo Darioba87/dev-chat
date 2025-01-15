@@ -26,7 +26,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLogin }) => {
     if (response.ok) {
       alert('Login successful!');
       onLogin();
+      window.location.reload();
       router.push('/');
+      
     } else {
       alert('Invalid email or password. Please try again.');
     }

@@ -1,7 +1,15 @@
 'use client';
 
-import LoginModal from './LogInModal';
+
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Navigation from '@/components/Navigation';
+import LoginModal from '@/components/LogInModal';
+
+const linkTargets = [
+  { title: 'Home', url: '/' },
+  { title: 'Chat', url: '/chat', requiresAuth: true },
+];
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +34,7 @@ const Header = () => {
       if (response.ok) {
         alert('Logged out successfully!');
         setIsLoggedIn(false);
+        window.location.reload();
       } else {
         alert('Failed to log out.');
       }
@@ -35,7 +44,6 @@ const Header = () => {
     }
   };
 
-  // Check if the token exists on mount
   useEffect(() => {
     const checkAuthToken = async () => {
       try {
@@ -44,11 +52,7 @@ const Header = () => {
           credentials: 'include',
         });
 
-        if (response.ok) {
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-        }
+        setIsLoggedIn(response.ok);
       } catch (error) {
         console.error('Error checking auth token:', error);
         setIsLoggedIn(false);
@@ -66,21 +70,27 @@ const Header = () => {
           <span>🌟 Logo</span>
         </div>
 
-        {/* Menu for Larger Screens */}
-        <nav className="hidden md:flex space-x-6">
-          <a href="#" className="hover:underline">
-            Home
-          </a>
-          <a href="#" className="hover:underline">
-            About
-          </a>
-          <a href="#" className="hover:underline">
-            Services
-          </a>
-        </nav>
+        {/* Desktop Navigation */}
+        <Navigation linkTargets={linkTargets} isAuthenticated={isLoggedIn} isMobile={false} />
 
-        {/* Login/Logout */}
-        <div>
+        {/* Login/Logout and Register/Profile */}
+        <div className="flex space-x-4">
+          {!isLoggedIn && (
+            <Link
+              href="/register"
+              className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md"
+            >
+              Register
+            </Link>
+          )}
+          {isLoggedIn && (
+            <Link
+              href="/profile"
+              className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md"
+            >
+              Profile
+            </Link>
+          )}
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
@@ -98,7 +108,7 @@ const Header = () => {
           )}
         </div>
 
-        {/* Hamburger Menu Icon for Small Screens */}
+        {/* Mobile Menu Icon */}
         <button
           onClick={toggleMenu}
           className="md:hidden text-white hover:text-gray-400 focus:outline-none"
@@ -137,19 +147,9 @@ const Header = () => {
         </button>
       </header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Navigation */}
       {menuOpen && (
-        <nav className="md:hidden bg-gray-800 text-white px-4 py-2 space-y-2">
-          <a href="#" className="block hover:underline">
-            Home
-          </a>
-          <a href="#" className="block hover:underline">
-            About
-          </a>
-          <a href="#" className="block hover:underline">
-            Services
-          </a>
-        </nav>
+        <Navigation linkTargets={linkTargets} isAuthenticated={isLoggedIn} isMobile={true} />
       )}
 
       {/* Modal */}

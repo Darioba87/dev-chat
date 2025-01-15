@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { serialize } from 'cookie';
 import bcrypt from 'bcrypt';
+import { serialize } from 'cookie';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
@@ -15,12 +15,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
 
             if (!user) {
-                return res.status(401).json({ error: 'Invalid email or password' });
+                return res.status(401).json({ error: 'Invalid email or password.' });
             }
 
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-            if (!isPasswordValid) {
-                return res.status(401).json({ error: 'Invalid email or password' });
+            const passwordMatch = await bcrypt.compare(password, user.password);
+            if (!passwordMatch) {
+                return res.status(401).json({ error: 'Invalid email or password.' });
             }
 
             const token = `token-${user.id}-${Date.now()}`;
@@ -36,11 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 })
             );
 
-            res.status(200).json({
-                message: 'Login successful',
-                user: { id: user.id, name: user.name, email: user.email },
-            });
-        } catch (error: unknown) {
+            res.status(200).json({ message: 'Login successful' });
+        } catch (error) {
             console.error('Error during login:', error);
             res.status(500).json({ error: 'Internal server error' });
         }

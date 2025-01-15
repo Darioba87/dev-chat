@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const Profile = () => {
   const [userData, setUserData] = useState({
@@ -10,39 +12,57 @@ const Profile = () => {
     password: '',
   });
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const getUser = async () => {
       try {
-        const response = await fetch('/api/profile', {
+        const response = await fetch('/api/getUser', {
           method: 'GET',
           credentials: 'include',
         });
-
-        console.log(response);
-        
 
         if (response.ok) {
           const data = await response.json();
           setUserData(data);
         } else {
-          alert('Failed to fetch user data');
+          throw new Error('Failed to fetch user data');
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
+        router.push('/login'); // Redirect if not authenticated
+      }
+    };
+
+    const checkAuthAndFetchUser = async () => {
+      try {
+        const authResponse = await fetch('/api/check-auth', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!authResponse.ok) {
+          router.push('/login');
+          return;
+        }
+
+        await getUser();
+      } catch (error) {
+        console.error('Error during authentication check or fetching user:', error);
+        router.push('/login');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserData();
-  }, []);
+    checkAuthAndFetchUser();
+  }, [router]);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/profile', {
+      const response = await fetch('/api/putUser', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -52,10 +72,11 @@ const Profile = () => {
       if (response.ok) {
         alert('Profile updated successfully!');
       } else {
-        alert('Failed to update profile');
+        throw new Error('Failed to update profile');
       }
     } catch (error) {
       console.error('Error updating profile:', error);
+      alert('An error occurred. Please try again.');
     }
   };
 
@@ -73,7 +94,7 @@ const Profile = () => {
             type="text"
             value={userData.name || ''}
             onChange={(e) => setUserData({ ...userData, name: e.target.value })}
-            className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            className="text-black mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm"
           />
         </div>
         <div>
@@ -82,7 +103,7 @@ const Profile = () => {
             type="text"
             value={userData.nickname || ''}
             onChange={(e) => setUserData({ ...userData, nickname: e.target.value })}
-            className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            className="text-black mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm"
           />
         </div>
         <div>
@@ -91,8 +112,9 @@ const Profile = () => {
             type="text"
             value={userData.image || ''}
             onChange={(e) => setUserData({ ...userData, image: e.target.value })}
-            className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            className="text-black mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm"
           />
+          <Image src={userData.image} alt="Profile" width={80} height={80} className="mt-2 rounded-full" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Password</label>
@@ -100,7 +122,7 @@ const Profile = () => {
             type="password"
             value={userData.password || ''}
             onChange={(e) => setUserData({ ...userData, password: e.target.value })}
-            className="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            className="text-black mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm"
           />
         </div>
         <div>
