@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-        // Elimina la cookie estableciendo maxAge en 0
         res.setHeader(
             'Set-Cookie',
             serialize('authToken', '', {

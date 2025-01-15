@@ -27,7 +27,7 @@ const Register = () => {
 
     if (response.ok) {
       alert('User registered!');
-      router.push('/profile'); // Redirige al usuario a la pantalla de perfil
+      router.push('/'); // TODO: Redirect to login page
     } else {
       alert('Registration failed. Please try again.');
     }

@@ -19,7 +19,7 @@ const Login = () => {
 
     if (response.ok) {
       alert('Login successful!');
-      router.push('/profile'); // Redirigir a la pantalla del perfil
+      router.push('/'); // TODO
     } else {
       alert('Invalid email or password. Please try again.');
     }

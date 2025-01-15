@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-
-import Logout from '@/components/Auth/Logout';
+import HomePage from './(default)/home/page';
 
 export const metadata: Metadata = {
   title: 'Startseite',
@@ -9,7 +8,8 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="default-layout">
-      <Logout/>    
+     <HomePage />
+    
   </main>
   );
 }
