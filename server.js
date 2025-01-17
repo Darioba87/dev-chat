@@ -78,6 +78,6 @@ io.on("connection", async (socket) => {
   }
 });
 
-server.listen(4000, () => {
-  console.log("Socket.io server running on port 4000");
+server.listen(process.env.PORT, () => {
+  console.log(`Socket.io server running on port ${process.env.PORT}`);
 });
