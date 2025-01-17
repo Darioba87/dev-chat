@@ -11,7 +11,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: process.env.CORS_ORIGIN,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -40,7 +40,7 @@ io.on("connection", async (socket) => {
   console.log("Extracted userId:", userId);
 
   if (!userId) {
-    console.log("Conexión rechazada: token inválido");
+    console.log("Connection rejected: invalid token");
     socket.emit("error", "Invalid authentication token.");
     return socket.disconnect();
   }
@@ -49,12 +49,12 @@ io.on("connection", async (socket) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) {
-      console.log("Conexión rechazada: usuario no encontrado");
+      console.log("Connection refused: user not found");
       socket.emit("error", "User not found.");
       return socket.disconnect();
     }
 
-    console.log(`Usuario conectado: ${user.nickname} (ID: ${userId})`);
+    console.log(`user with: ${user.nickname} (ID: ${userId})`);
 
     socket.on("message", (data) => {
       const messagePayload = {
@@ -63,21 +63,21 @@ io.on("connection", async (socket) => {
         time: new Date().toISOString(),
       };
 
-      console.log(`Mensaje recibido de ${user.nickname}:`, messagePayload);
+      console.log(`Message received from ${user.nickname}:`, messagePayload);
 
       socket.broadcast.emit("message", messagePayload);
     });
 
     socket.on("disconnect", () => {
-      console.log(`Usuario desconectado: ${user.nickname} (ID: ${userId})`);
+      console.log(`User disconected: ${user.nickname} (ID: ${userId})`);
     });
   } catch (error) {
-    console.error("Error durante la conexión:", error);
+    console.error("Error during connection:", error);
     socket.emit("error", "An internal error occurred.");
     socket.disconnect();
   }
 });
 
-server.listen(process.env.PORT || 4000, () => {
-  console.log("Servidor Socket.io ejecutándose en el puerto 4000");
+server.listen(4000, () => {
+  console.log("Socket.io server running on port 4000");
 });
