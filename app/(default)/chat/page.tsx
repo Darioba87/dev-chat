@@ -53,7 +53,7 @@ const Chat = () => {
           window.location.href = '/login';
         }
       } catch (error) {
-        console.error('Error al obtener los datos del usuario:', error);
+        console.error('Error getting user data:', error);
         window.location.href = '/login';
       }
     };
@@ -64,7 +64,7 @@ const Chat = () => {
       setMessages((prev) => [...prev, newMessage]);
     };
 
-    // Configura el listener del socket
+    // Set up the socket listener
     if (!socket.hasListeners('message')) {
       socket.on('message', handleNewMessage);
     }
@@ -85,7 +85,7 @@ const Chat = () => {
       time: new Date().toLocaleTimeString(),
     };
 
-    // Emitir mensaje y actualizar estado local
+    // Emit message and update local state
     socket.emit('message', newMessage);
     setMessages((prev) => [...prev, newMessage]);
     setMessage('');
@@ -121,7 +121,7 @@ const Chat = () => {
       const { data } = await gf.search(gifSearch, { limit: 9 });
       setGifs(data);
     } catch (error) {
-      console.error('Error al buscar GIFs:', error);
+      console.error('Error searching for GIFs', error);
     }    
 
 
@@ -184,7 +184,7 @@ const sendGif = (gifUrl: string) => {
           😊
         </button>
         <button onClick={sendMessage} className="p-2 bg-blue-600 text-white rounded-md">
-          Enviar
+          Send
         </button>
       </div>
 
@@ -197,7 +197,7 @@ const sendGif = (gifUrl: string) => {
           className="w-full p-2 rounded-md bg-gray-700 text-white"
         />
         <button onClick={searchGifs} className="mt-2 p-2 bg-green-600 rounded-md">
-          Buscar GIFs
+          Search GIFs
         </button>
         <div className="grid grid-cols-3 gap-2 mt-4">
           {gifs.map((gif, index) => (
