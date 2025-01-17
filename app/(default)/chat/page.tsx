@@ -7,7 +7,7 @@ import { IGif } from '@giphy/js-types';
 import Picker from 'emoji-picker-react';
 import Image from 'next/image';
 
-const socket = io('http://localhost:4000', { withCredentials: true });
+const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000", { withCredentials: true });
 const gf = new GiphyFetch('eBH01NFVyV6gco0RHkayUeq4RqK0RR9u'); // API Key de Giphy
 
 const getRandomColor = () => {
