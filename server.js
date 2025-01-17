@@ -11,7 +11,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: env("SOCKET_URL"),
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -78,6 +78,6 @@ io.on("connection", async (socket) => {
   }
 });
 
-server.listen(4000, () => {
+server.listen(process.env.PORT || 4000, () => {
   console.log("Servidor Socket.io ejecutándose en el puerto 4000");
 });
