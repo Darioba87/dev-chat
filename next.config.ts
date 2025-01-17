@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    domains: ['media.giphy.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -17,6 +17,16 @@ const nextConfig = {
         hostname: 'ui-avatars.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: `media0.giphy.com`,
+        pathname: '/**',
+      },
+      ...Array.from({ length: 10 }, (_, i) => ({
+        protocol: 'https',
+        hostname: `media${i + 1}.giphy.com`,
+        pathname: '/**',
+      })),
     ],
   },
 };
